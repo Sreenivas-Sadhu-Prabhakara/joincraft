@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 100%; height: 100%; overflow: hidden; background: #1D2126; }
+  body { display: grid; place-items: center; }
+  /* 12% safe padding -> mark fills the middle 76vmin */
+  .mark { width: 76vmin; height: 76vmin; display: block; }
+  .row { fill: #2E353D; stroke: #3A424B; stroke-width: 0.5; }
+  .rib { fill: none; stroke: #D7F84B; stroke-width: 2.4; stroke-linecap: round; }
+</style>
+</head>
+<body>
+  <svg class="mark" viewBox="0 0 32 32" aria-hidden="true">
+    <rect class="row" x="4" y="14" width="8" height="4" rx="1.4"/>
+    <rect class="row" x="22" y="6"  width="7" height="4" rx="1.4"/>
+    <rect class="row" x="22" y="14" width="7" height="4" rx="1.4"/>
+    <rect class="row" x="22" y="22" width="7" height="4" rx="1.4"/>
+    <path class="rib" d="M12 16 C 17 16, 17 8,  22 8"/>
+    <path class="rib" d="M12 16 C 17 16, 17 16, 22 16"/>
+    <path class="rib" d="M12 16 C 17 16, 17 24, 22 24"/>
+  </svg>
+</body>
+</html>

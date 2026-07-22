@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'none'; img-src 'self' data:; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; object-src 'none'">
+  <title>joincraft — SQL joins explained with a real row-by-row visualizer</title>
+  <meta name="description" content="SQL joins explained: watch a real hand-rolled evaluator pair rows up — INNER, LEFT, RIGHT, FULL, CROSS — with duplicate keys, NULLs, and GROUP BY, where a Venn diagram misleads. Runs fully offline in your browser.">
+  <meta name="color-scheme" content="dark light">
+  <link rel="canonical" href="https://sreenivas-sadhu-prabhakara.github.io/joincraft/">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <meta name="author" content="Sreenivas Sadhu Prabhakara">
+  <meta name="keywords" content="sql joins explained, sql join visualizer, inner join, left join, right join, full outer join, cross join, sql null handling, three-valued logic, group by nulls, duplicate keys join, venn diagram sql misleading">
+  <meta name="theme-color" content="#1D2126" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#F3F5F2" media="(prefers-color-scheme: light)">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="joincraft">
+  <meta property="og:title" content="joincraft — SQL joins explained with a real row-by-row visualizer">
+  <meta property="og:description" content="Watch SQL rows actually pair up — duplicates, NULLs and all. A real evaluator draws join ribbons where a Venn diagram misleads.">
+  <meta property="og:url" content="https://sreenivas-sadhu-prabhakara.github.io/joincraft/">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:image" content="https://sreenivas-sadhu-prabhakara.github.io/joincraft/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="joincraft — a one-to-three chartreuse join ribbon fan between two row stacks: the duplicate-key blowup a Venn diagram cannot draw">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="joincraft — SQL joins explained with a real row-by-row visualizer">
+  <meta name="twitter:description" content="Watch SQL rows actually pair up — duplicates, NULLs and all. A real evaluator, not a Venn diagram.">
+  <meta name="twitter:image" content="https://sreenivas-sadhu-prabhakara.github.io/joincraft/og-image.png">
+  <meta name="twitter:image:alt" content="joincraft — a one-to-three join ribbon fan between two row stacks">
+
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="manifest" href="manifest.webmanifest">
+
+  <!-- Structured data (data block; not affected by script-src) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "joincraft",
+    "description": "An interactive SQL-join visualizer: a real hand-rolled evaluator pairs rows up one ribbon at a time across INNER, LEFT, RIGHT, FULL and CROSS joins, with duplicate keys, NULLs, three-valued logic, and GROUP BY — showing where a Venn diagram misleads. Runs fully offline in the browser.",
+    "url": "https://sreenivas-sadhu-prabhakara.github.io/joincraft/",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any (modern web browser)",
+    "browserRequirements": "Requires a modern web browser with JavaScript enabled.",
+    "isAccessibleForFree": true,
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "license": "https://opensource.org/licenses/MIT",
+    "author": { "@type": "Person", "name": "Sreenivas Sadhu Prabhakara" },
+    "softwareVersion": "0.1.0",
+    "featureList": [
+      "INNER, LEFT, RIGHT, FULL and CROSS joins on two editable tables",
+      "Animated join-ribbon view: solid = matched pair, dashed = orphan into a NULL pad",
+      "Row-math counter strip with a 'a Venn diagram cannot draw this' callout",
+      "Interactive three-valued-logic (NULL) truth table",
+      "GROUP BY stage with COUNT / SUM / AVG / MIN / MAX and NULL rules",
+      "12 one-click gotcha scenarios with a progress checklist",
+      "Illustrative ANSI SQL with copy, plus CSV and printable cheat-sheet export",
+      "Runs 100% offline in your browser"
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Why can a SQL join return more rows than either table?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "When a join key is duplicated, rows multiply. If key 'A' has 2 rows on the left and 3 on the right, an INNER join emits 2 x 3 = 6 rows for that key alone, so the output can exceed both inputs. This duplicate-key blowup is the fan a Venn diagram cannot draw, and joincraft draws it as a one-to-many ribbon."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why do NULL join keys never match, even NULL = NULL?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "In SQL, NULL = NULL evaluates to UNKNOWN, not TRUE, so an ON clause never pairs two NULL keys. A NULL-key row is dropped by INNER, but survives LEFT/RIGHT/FULL with the other side padded to NULL. Confusingly, GROUP BY does the opposite: it collapses all NULLs into one bucket. joincraft shows both side by side."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does joincraft run a real SQL engine or send my data anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. joincraft is a teaching model, not a SQL engine: you pick one join plus an optional GROUP BY from controls, and a hand-rolled evaluator computes the exact result. Its results were cross-checked against SQLite during authoring. Everything runs and stays in your browser — the page's Content-Security-Policy blocks all network requests, so nothing is ever sent anywhere. Export CSV or print the cheat-sheet as your handoff."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#builder">Skip to the join builder</a>
+
+  <!-- ============ HERO ============ -->
+  <header class="hero">
+    <div class="hero__inner">
+      <p class="eyebrow">Interactive SQL-join visualizer &middot; real evaluator &middot; offline</p>
+      <h1 class="hero__title">SQL joins explained: watch rows pair up&mdash;<span class="hero__accent">duplicates, NULLs and all</span></h1>
+      <p class="hero__lede">
+        Diagrams lie about joins. joincraft runs a genuine hand-rolled evaluator over two small tables
+        and draws a <strong>ribbon</strong> from every output row back to the source rows it came from&mdash;so you can
+        <em>see</em> the duplicate-key blowup, the NULL that never matches, and the GROUP BY that groups those same NULLs together.
+      </p>
+      <div class="hero__marks" aria-hidden="true">
+        <!-- the signature 1-to-3 ribbon fan -->
+        <svg viewBox="0 0 220 120" class="fanmark" role="presentation">
+          <rect class="fanmark__row" x="6" y="50" width="54" height="20" rx="4"/>
+          <rect class="fanmark__row" x="160" y="14" width="54" height="20" rx="4"/>
+          <rect class="fanmark__row" x="160" y="50" width="54" height="20" rx="4"/>
+          <rect class="fanmark__row" x="160" y="86" width="54" height="20" rx="4"/>
+          <path class="fanmark__ribbon" d="M60 60 C 110 60, 110 24, 160 24"/>
+          <path class="fanmark__ribbon" d="M60 60 C 110 60, 110 60, 160 60"/>
+          <path class="fanmark__ribbon" d="M60 60 C 110 60, 110 96, 160 96"/>
+        </svg>
+      </div>
+    </div>
+  </header>
+
+  <main id="builder">
+    <!-- ============ SCENARIOS RAIL ============ -->
+    <section class="scenarios" aria-labelledby="scenHeading">
+      <div class="section__head">
+        <h2 id="scenHeading" class="section__title">Gotcha scenarios</h2>
+        <p class="section__note">
+          <span class="progress" id="scenProgress" aria-live="polite">0 / 12 understood</span>
+          &mdash; each loads a table pair + operation + hand-verified result. Tick them off as they click.
+        </p>
+      </div>
+      <div class="scen-grid" id="scenGrid" role="list"></div>
+      <div class="scen-actions">
+        <button type="button" class="btn btn--ghost" id="scenResetBtn">Reset checklist</button>
+      </div>
+    </section>
+
+    <!-- ============ TABLES ============ -->
+    <section class="tables" aria-labelledby="tablesHeading">
+      <div class="section__head">
+        <h2 id="tablesHeading" class="section__title">Two tables</h2>
+        <div class="preset-row">
+          <label for="presetSel" class="preset-row__label">Preset pair</label>
+          <select id="presetSel" class="select"></select>
+          <span class="preset-row__blurb" id="presetBlurb"></span>
+        </div>
+      </div>
+      <p class="tables__hint">
+        Edit any cell, toggle a cell to <span class="tok tok--null">NULL</span>, add or delete rows (max 8 per side), and duplicate keys freely.
+        Your edits are saved in this browser.
+      </p>
+      <div class="tables__grid">
+        <div class="tablewrap" id="leftTableWrap" aria-label="Left table"></div>
+        <div class="tablewrap" id="rightTableWrap" aria-label="Right table"></div>
+      </div>
+    </section>
+
+    <!-- ============ CONTROLS ============ -->
+    <section class="ops" aria-labelledby="opsHeading">
+      <h2 id="opsHeading" class="section__title">The operation</h2>
+      <form class="ops__form" id="opsForm" novalidate>
+        <fieldset class="panel">
+          <legend class="panel__legend">Join type</legend>
+          <div class="segmented" role="radiogroup" aria-label="Join type" id="joinTypes">
+            <label class="seg"><input type="radio" name="jtype" value="INNER" checked><span>INNER</span></label>
+            <label class="seg"><input type="radio" name="jtype" value="LEFT"><span>LEFT</span></label>
+            <label class="seg"><input type="radio" name="jtype" value="RIGHT"><span>RIGHT</span></label>
+            <label class="seg"><input type="radio" name="jtype" value="FULL"><span>FULL</span></label>
+            <label class="seg"><input type="radio" name="jtype" value="CROSS"><span>CROSS</span></label>
+          </div>
+        </fieldset>
+        <fieldset class="panel" id="keyPanel">
+          <legend class="panel__legend">Join keys (ON)</legend>
+          <div class="keysel">
+            <label>Left key <select id="leftKeySel" class="select"></select></label>
+            <span class="keysel__eq" aria-hidden="true">=</span>
+            <label>Right key <select id="rightKeySel" class="select"></select></label>
+          </div>
+          <p class="panel__hint" id="crossHint" hidden>CROSS ignores keys entirely &mdash; every left row is paired with every right row.</p>
+        </fieldset>
+        <fieldset class="panel panel--wide">
+          <legend class="panel__legend">GROUP BY <span class="panel__opt">(optional)</span></legend>
+          <div class="groupsel">
+            <label>Group by <select id="groupColSel" class="select"><option value="">— none —</option></select></label>
+            <label>Aggregate
+              <select id="aggSel" class="select">
+                <option value="COUNT_STAR">COUNT(*)</option>
+                <option value="COUNT">COUNT(col)</option>
+                <option value="SUM">SUM(col)</option>
+                <option value="AVG">AVG(col)</option>
+                <option value="MIN">MIN(col)</option>
+                <option value="MAX">MAX(col)</option>
+              </select>
+            </label>
+            <label id="aggColLabel">of column <select id="aggColSel" class="select"></select></label>
+          </div>
+        </fieldset>
+      </form>
+    </section>
+
+    <!-- ============ RIBBON VIEW ============ -->
+    <section class="ribbon" aria-labelledby="ribbonHeading">
+      <div class="section__head">
+        <h2 id="ribbonHeading" class="section__title">The join, ribbon by ribbon</h2>
+        <div class="playback">
+          <button type="button" class="btn btn--ghost" id="stepBtn">Step ▸</button>
+          <button type="button" class="btn btn--primary" id="playBtn">Play ▷</button>
+          <button type="button" class="btn btn--ghost" id="allBtn">Show all</button>
+        </div>
+      </div>
+      <p class="legend" aria-hidden="false">
+        <span class="legend__item"><span class="swatch swatch--solid"></span> solid ribbon = matched pair</span>
+        <span class="legend__item"><span class="swatch swatch--dash"></span> dashed into <span class="tok tok--null">NULL</span> pad = orphan</span>
+      </p>
+      <div class="ribbon__stage" id="ribbonStage" aria-live="polite" aria-label="Join ribbon diagram"></div>
+      <p class="ribbon__annot" id="ribbonAnnot" aria-live="polite"></p>
+    </section>
+
+    <!-- ============ COUNTER STRIP ============ -->
+    <section class="counters" aria-labelledby="countersHeading">
+      <h2 id="countersHeading" class="section__title">Row math</h2>
+      <div class="counter-strip" id="counterStrip"></div>
+      <p class="blowup" id="blowupCallout" hidden role="status">
+        <span class="blowup__badge">! blowup</span>
+        A Venn diagram cannot draw this: the output has more rows than either input, because duplicate keys multiplied the pairing.
+      </p>
+    </section>
+
+    <!-- ============ RESULT + SQL + EXPORT ============ -->
+    <section class="result" aria-labelledby="resultHeading">
+      <div class="section__head">
+        <h2 id="resultHeading" class="section__title">Result table</h2>
+        <div class="result__actions">
+          <button type="button" class="btn btn--ghost" id="csvBtn">Download CSV</button>
+          <button type="button" class="btn btn--ghost" id="printBtn">Print cheat-sheet</button>
+        </div>
+      </div>
+      <div class="result__wrap" id="resultWrap" aria-live="polite"></div>
+
+      <div class="sqlbox">
+        <div class="sqlbox__head">
+          <span class="sqlbox__label">Illustrative ANSI SQL <span class="sqlbox__caveat">— this app is not a SQL engine</span></span>
+          <button type="button" class="btn btn--tiny" id="copySqlBtn">Copy</button>
+        </div>
+        <pre class="sqlbox__code" id="sqlText"></pre>
+      </div>
+    </section>
+
+    <!-- ============ NULL CORNER (3VL) ============ -->
+    <section class="nullcorner" aria-labelledby="nullHeading">
+      <div class="section__head">
+        <h2 id="nullHeading" class="section__title">The NULL corner: three-valued logic</h2>
+        <p class="section__note">
+          Every SQL condition returns <strong>TRUE</strong>, <strong>FALSE</strong>, or
+          <strong>UNKNOWN</strong>. This is why <code>NULL = NULL</code> never matches in an <code>ON</code> clause.
+        </p>
+      </div>
+      <div class="threevl" id="threevl"></div>
+    </section>
+
+    <!-- ============ CHEAT-SHEET PRINT SUMMARY (screen-hidden header for print) ============ -->
+    <section class="printhead" aria-hidden="true" id="printHead"></section>
+  </main>
+
+  <!-- ============ HONEST LIMITS ============ -->
+  <section class="limits" aria-labelledby="limitsHeading">
+    <div class="limits__inner">
+      <h2 id="limitsHeading" class="section__title">Honest limits</h2>
+      <ul class="limits__list">
+        <li><strong>A teaching model, not a SQL engine.</strong> One join (INNER/LEFT/RIGHT/FULL/CROSS) between two small tables, plus one optional GROUP BY aggregate &mdash; no WHERE, HAVING, ORDER BY, subqueries, or free-text SQL. The fixed grammar is the honesty contract.</li>
+        <li><strong>Rows appear in a deterministic teaching order</strong> (left row, then right row). Real SQL guarantees no row order without <code>ORDER BY</code>.</li>
+        <li><strong>ANSI semantics, cross-checked against SQLite</strong> during authoring. Real databases can differ in collation, type coercion, and dialect extensions &mdash; verify anything important on your actual database.</li>
+        <li><strong>The SQL text is illustrative</strong> ANSI syntax for reading and copying, not the output of a query engine running here.</li>
+        <li><strong>Everything stays in this browser</strong> (localStorage only; the page's CSP blocks all network requests) &mdash; so there is no cloud sync or sharing. Print or CSV export is the handoff.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="foot">
+    <div class="foot__inner">
+      <p class="foot__disclaimer">
+        <strong>Educational tool.</strong> joincraft illustrates SQL join and NULL semantics for learning. It is a teaching model,
+        not a database engine, and its output is not a substitute for testing against your real database. Provided under the MIT License, &ldquo;as is&rdquo;, without warranty of any kind.
+      </p>
+      <p class="foot__meta">
+        <span>Runs 100% offline</span><span class="foot__dot">&middot;</span>
+        <span>No network, no accounts</span><span class="foot__dot">&middot;</span>
+        <span>Verified vs SQLite</span><span class="foot__dot">&middot;</span>
+        <span>MIT&nbsp;License</span><span class="foot__dot">&middot;</span>
+        <span>&copy; 2026 Sreenivas&nbsp;Sadhu&nbsp;Prabhakara</span>
+      </p>
+    </div>
+  </footer>
+
+  <script src="data/corpus.js"></script>
+  <script src="data/engine.js"></script>
+  <script src="app.js" defer></script>
+</body>
+</html>

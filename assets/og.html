@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  :root {
+    --bg:      #1D2126;
+    --panel:   #262C33;
+    --panel2:  #2E353D;
+    --line:    #3A424B;
+    --ink:     #E9EDF0;
+    --muted:   #9AA7B0;
+    --accent:  #D7F84B;
+    --accent-ink: #161A10;
+    --orphan:  #6B7680;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1200px; height: 630px; overflow: hidden; }
+  body {
+    position: relative;
+    background:
+      radial-gradient(1200px 620px at 82% -12%, rgba(215,248,75,0.12), transparent 60%),
+      radial-gradient(900px 520px at 4% 8%, rgba(215,248,75,0.05), transparent 55%),
+      linear-gradient(180deg, #191D22 0%, #1D2126 100%);
+    font-family: var(--sans); color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+  }
+  .frame { position: absolute; inset: 0; padding: 76px 84px; display: flex; flex-direction: column; justify-content: space-between; }
+
+  .brand { display: flex; align-items: center; gap: 22px; }
+  .mark { width: 76px; height: 76px; }
+  .wordmark { font-size: 60px; font-weight: 800; letter-spacing: -0.035em; color: var(--ink); }
+
+  .mid { display: flex; align-items: center; gap: 56px; }
+  .headline { max-width: 620px; }
+  .headline h1 { font-size: 54px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.08; }
+  .headline .accent { color: var(--accent); }
+  .headline p { margin-top: 22px; font-size: 27px; font-weight: 500; color: var(--muted); line-height: 1.35; max-width: 20ch; }
+
+  /* the signature 1-to-3 fan, large */
+  .fan { flex: 0 0 auto; }
+  .fanrow { fill: var(--panel2); stroke: var(--line); stroke-width: 1.5; }
+  .fanrow--dash { fill: none; stroke: var(--orphan); stroke-dasharray: 6 5; }
+  .rib { fill: none; stroke: var(--accent); stroke-width: 7; stroke-linecap: round; }
+  .rib--dash { stroke: var(--orphan); stroke-dasharray: 8 6; stroke-width: 5; }
+  .rlbl { font-family: var(--mono); font-size: 17px; fill: var(--ink); }
+  .rlbl--null { fill: var(--orphan); font-style: italic; }
+
+  .chips { display: flex; gap: 13px; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 10px; padding: 12px 20px;
+    border: 1px solid var(--line); border-radius: 999px; background: rgba(38,44,51,0.55);
+    font-size: 22px; font-weight: 600; color: var(--muted); font-family: var(--mono);
+  }
+  .chip .dot { width: 11px; height: 11px; border-radius: 50%; background: var(--accent); }
+</style>
+</head>
+<body>
+  <div class="frame">
+    <div class="brand">
+      <svg class="mark" viewBox="0 0 32 32" aria-hidden="true">
+        <rect width="32" height="32" rx="7" fill="#262C33"/>
+        <rect x="4" y="14" width="8" height="4" rx="1.4" fill="#2E353D" stroke="#3A424B" stroke-width="0.6"/>
+        <rect x="22" y="6"  width="7" height="4" rx="1.4" fill="#2E353D" stroke="#3A424B" stroke-width="0.6"/>
+        <rect x="22" y="14" width="7" height="4" rx="1.4" fill="#2E353D" stroke="#3A424B" stroke-width="0.6"/>
+        <rect x="22" y="22" width="7" height="4" rx="1.4" fill="#2E353D" stroke="#3A424B" stroke-width="0.6"/>
+        <path d="M12 16 C 17 16, 17 8,  22 8"  fill="none" stroke="#D7F84B" stroke-width="1.9" stroke-linecap="round"/>
+        <path d="M12 16 C 17 16, 17 16, 22 16" fill="none" stroke="#D7F84B" stroke-width="1.9" stroke-linecap="round"/>
+        <path d="M12 16 C 17 16, 17 24, 22 24" fill="none" stroke="#D7F84B" stroke-width="1.9" stroke-linecap="round"/>
+      </svg>
+      <span class="wordmark">joincraft</span>
+    </div>
+
+    <div class="mid">
+      <div class="headline">
+        <h1>Watch SQL rows<br>actually <span class="accent">pair up</span>.</h1>
+        <p>Duplicates, NULLs and all — where a Venn diagram misleads.</p>
+      </div>
+
+      <!-- the 1-to-3 ribbon fan the app is built around -->
+      <svg class="fan" width="420" height="300" viewBox="0 0 420 300" aria-hidden="true">
+        <!-- left source row -->
+        <rect class="fanrow" x="8" y="130" width="150" height="40" rx="7"/>
+        <text class="rlbl" x="24" y="155">A, 100</text>
+        <!-- three right rows (fanned) -->
+        <rect class="fanrow" x="262" y="40"  width="150" height="40" rx="7"/>
+        <text class="rlbl" x="278" y="65">A, 5</text>
+        <rect class="fanrow" x="262" y="130" width="150" height="40" rx="7"/>
+        <text class="rlbl" x="278" y="155">A, 6</text>
+        <rect class="fanrow" x="262" y="220" width="150" height="40" rx="7"/>
+        <text class="rlbl" x="278" y="245">A, 7</text>
+        <!-- the fan -->
+        <path class="rib" d="M158 150 C 210 150, 210 60,  262 60"/>
+        <path class="rib" d="M158 150 C 210 150, 210 150, 262 150"/>
+        <path class="rib" d="M158 150 C 210 150, 210 240, 262 240"/>
+      </svg>
+    </div>
+
+    <div class="chips">
+      <span class="chip"><span class="dot"></span>real evaluator</span>
+      <span class="chip"><span class="dot"></span>NULL &amp; 3-valued logic</span>
+      <span class="chip"><span class="dot"></span>verified vs SQLite</span>
+      <span class="chip"><span class="dot"></span>offline</span>
+    </div>
+  </div>
+</body>
+</html>

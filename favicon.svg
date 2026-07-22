@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="joincraft">
+  <rect width="32" height="32" rx="7" fill="#1D2126"/>
+  <!-- left source row -->
+  <rect x="4" y="14" width="8" height="4" rx="1.4" fill="#2E353D" stroke="#3A424B" stroke-width="0.6"/>
+  <!-- three right rows -->
+  <rect x="22" y="6"  width="7" height="4" rx="1.4" fill="#2E353D" stroke="#3A424B" stroke-width="0.6"/>
+  <rect x="22" y="14" width="7" height="4" rx="1.4" fill="#2E353D" stroke="#3A424B" stroke-width="0.6"/>
+  <rect x="22" y="22" width="7" height="4" rx="1.4" fill="#2E353D" stroke="#3A424B" stroke-width="0.6"/>
+  <!-- the 1-to-3 chartreuse ribbon fan -->
+  <path d="M12 16 C 17 16, 17 8,  22 8"  fill="none" stroke="#D7F84B" stroke-width="1.9" stroke-linecap="round"/>
+  <path d="M12 16 C 17 16, 17 16, 22 16" fill="none" stroke="#D7F84B" stroke-width="1.9" stroke-linecap="round"/>
+  <path d="M12 16 C 17 16, 17 24, 22 24" fill="none" stroke="#D7F84B" stroke-width="1.9" stroke-linecap="round"/>
+</svg>

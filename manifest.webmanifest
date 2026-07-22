@@ -1,0 +1,24 @@
+{
+  "name": "joincraft — SQL joins explained",
+  "short_name": "joincraft",
+  "description": "An interactive SQL-join visualizer: a real evaluator pairs rows up across INNER, LEFT, RIGHT, FULL and CROSS joins, with duplicate keys, NULLs, three-valued logic, and GROUP BY. Runs fully offline.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "background_color": "#1D2126",
+  "theme_color": "#1D2126",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
