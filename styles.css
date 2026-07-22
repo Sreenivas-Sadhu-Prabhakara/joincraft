@@ -17,6 +17,7 @@
   --accent-text: #D7F84B; /* chartreuse as text on dark (13.4:1) */
   --orphan:  #6B7680;   /* NULL / orphan grey — ALWAYS with dash pattern */
   --orphan-text: #9AA7B0;
+  --orphan-solid: #586069; /* darker fill for the solid NULL pill so a white label clears AA (6.4:1) */
   --danger:  #FF8A5B;
 
   --sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -43,6 +44,7 @@
     --accent-text: #526600; /* olive-chartreuse text/lines, 5.9:1 */
     --orphan:  #8A949C;
     --orphan-text: #566068;
+    --orphan-solid: #647079; /* darker fill for the solid NULL pill so a white label clears AA (5.1:1) */
     --danger:  #B23A12;
     --shadow: 0 16px 40px -30px rgba(30,40,20,0.35);
   }
@@ -237,7 +239,7 @@ table.grid td { padding: 2px 4px; border-bottom: 1px solid var(--panel2); }
   font-size: 0.62rem; font-family: var(--sans); padding: 1px 5px; border-radius: 4px;
   border: 1px dashed var(--orphan); background: transparent; color: var(--orphan-text); cursor: pointer;
 }
-.cell.is-null .cell__null { background: var(--orphan); color: var(--bg); border-style: solid; font-weight: 700; }
+.cell.is-null .cell__null { background: var(--orphan-solid); color: #fff; border-color: var(--orphan-solid); border-style: solid; font-weight: 700; }
 .rowdel {
   border: none; background: transparent; color: var(--muted); cursor: pointer;
   font-size: 1rem; line-height: 1; padding: 2px 6px; border-radius: 4px;
